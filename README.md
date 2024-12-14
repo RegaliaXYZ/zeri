@@ -35,4 +35,4 @@ Needs config.json at the root with this format
 
 ```
 
-To run the srcgen use `node riven/srcgen` from the repository root.
+Needs to run `utils/download_champs.go` each time a champion icon is updated or added, upload the new or updated version as emoji and update the `types/type.go` accordingly
