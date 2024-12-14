@@ -80,7 +80,7 @@ func riotHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		return
 	}
 	// Get Account Profile Details
-	profileIconID, summonerLevel, err := fetchAccountProfileDetail(puuid, region, cfg.RiotAPIKey)
+	profileIconID, summonerLevel, encryptedId, err := fetchAccountProfileDetail(puuid, region, cfg.RiotAPIKey)
 	if err != nil {
 		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
@@ -90,6 +90,18 @@ func riotHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		})
 		return
 	}
+	// Rank, LP, Wins & Losses
+	queuetype, tier, rank, winrate, leaguePoints, wins, losses, err := fetchRankedDetails(encryptedId, region, cfg.RiotAPIKey)
+	if err != nil {
+		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+			Type: discordgo.InteractionResponseChannelMessageWithSource,
+			Data: &discordgo.InteractionResponseData{
+				Content: fmt.Sprintf("Error fetching ranked details: %v", err),
+			},
+		})
+		return
+	}
+
 	// Fetch matches using Riot API
 	matches, err := fetchMatches(puuid, cfg.RiotAPIKey)
 	if err != nil {
@@ -126,8 +138,8 @@ func riotHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		Color:       0x0000ff, // Green color for the embed
 		Fields: []*discordgo.MessageEmbedField{
 			{
-				Name:   "Ranked Solo/Duo",
-				Value:  "Master 1\n10LP\n46G 29W 17L 63%",
+				Name:   queuetype,
+				Value:  tier + " " + rank + "\n" + strconv.Itoa(leaguePoints) + "LP\n" + strconv.Itoa(wins+losses) + "G " + strconv.Itoa(wins) + "W " + strconv.Itoa(losses) + "L " + strconv.FormatFloat(winrate, 'f', 2, 64) + "%",
 				Inline: false,
 			},
 			{
@@ -158,6 +170,45 @@ func riotHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		},
 	})
 }
+
+func fetchRankedDetails(encryptedId, region, api_key string) (string, string, string, float64, int, int, int, error) {
+	riotBaseURL := fmt.Sprintf("https://%s.api.riotgames.com", strings.ToLower(region))
+	// Fetch match history using PUUID
+	matchURL := fmt.Sprintf("%s/lol/league/v4/entries/by-summoner/%s", riotBaseURL, encryptedId)
+	req, _ := http.NewRequest("GET", matchURL, nil)
+	req.Header.Set("X-Riot-Token", api_key)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return "", "", "", 0.0, 0, 0, 0, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		return "", "", "", 0.0, 0, 0, 0, fmt.Errorf("Riot API error: %s", string(body))
+	}
+
+	var accountProfileDetailData []struct {
+		QueueType    string `json:"queueType"`
+		Tier         string `json:"tier"`
+		Rank         string `json:"rank"`
+		LeaguePoints int    `json:"leaguePoints"`
+		Wins         int    `json:"wins"`
+		Losses       int    `json:"losses"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&accountProfileDetailData); err != nil {
+		return "", "", "", 0.0, 0, 0, 0, err
+	}
+	if len(accountProfileDetailData) == 0 {
+		return "Unranked", "", "", 0.0, 0, 0, 0, err
+	}
+	detailData := accountProfileDetailData[0]
+
+	winrate := (float64(detailData.Wins) / (float64(detailData.Wins) + float64(detailData.Losses))) * 100
+
+	return detailData.QueueType, detailData.Tier, detailData.Rank, winrate, detailData.LeaguePoints, detailData.Wins, detailData.Losses, nil
+}
 func getPUUID(riotID, tag, region, api_key string) (string, error) {
 	riotBaseURL := "https://europe.api.riotgames.com" // Replace <region> with the appropriate region
 	url := fmt.Sprintf("%s/riot/account/v1/accounts/by-riot-id/%s/%s", riotBaseURL, riotID, tag)
@@ -185,7 +236,7 @@ func getPUUID(riotID, tag, region, api_key string) (string, error) {
 	return summonerData.Puuid, nil
 }
 
-func fetchAccountProfileDetail(puuid, region, api_key string) (string, string, error) {
+func fetchAccountProfileDetail(puuid, region, api_key string) (string, string, string, error) {
 	riotBaseURL := fmt.Sprintf("https://%s.api.riotgames.com", strings.ToLower(region))
 	// Fetch match history using PUUID
 	matchURL := fmt.Sprintf("%s/lol/summoner/v4/summoners/by-puuid/%s", riotBaseURL, puuid)
@@ -194,24 +245,25 @@ func fetchAccountProfileDetail(puuid, region, api_key string) (string, string, e
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return "", "", err
+		return "", "", "", err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
-		return "", "", fmt.Errorf("Riot API error: %s", string(body))
+		return "", "", "", fmt.Errorf("Riot API error: %s", string(body))
 	}
 
 	var accountProfileDetailData struct {
-		ProfileIconID int `json:"profileIconId"`
-		SummonerLevel int `json:"summonerLevel"`
+		ProfileIconID int    `json:"profileIconId"`
+		SummonerLevel int    `json:"summonerLevel"`
+		EncryptedID   string `json:"id"`
 	}
 	if err := json.NewDecoder(resp.Body).Decode(&accountProfileDetailData); err != nil {
-		return "", "", err
+		return "", "", "", err
 	}
 
-	return strconv.Itoa(accountProfileDetailData.ProfileIconID), strconv.Itoa(accountProfileDetailData.SummonerLevel), nil
+	return strconv.Itoa(accountProfileDetailData.ProfileIconID), strconv.Itoa(accountProfileDetailData.SummonerLevel), accountProfileDetailData.EncryptedID, nil
 }
 
 func fetchMatches(puuid, api_key string) ([]string, error) {
