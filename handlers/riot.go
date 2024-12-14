@@ -10,7 +10,6 @@ import (
 
 	"github.com/RegaliaXYZ/opgg-discord/bot"
 	"github.com/RegaliaXYZ/opgg-discord/types"
-	"github.com/RegaliaXYZ/opgg-discord/utils"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -68,7 +67,7 @@ func riotHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	riotID = parts[0]
 	tag = parts[1]
 	// Get Patch version
-	patch, err := utils.FetchCurrentPatch()
+	patch, err := fetchCurrentPatch()
 	if err != nil {
 		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
@@ -180,6 +179,21 @@ func riotHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 			Embeds: []*discordgo.MessageEmbed{embed},
 		},
 	})
+}
+
+func fetchCurrentPatch() (string, error) {
+	url := "https://ddragon.leagueoflegends.com/api/versions.json"
+	resp, err := http.Get(url)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	data := []string{}
+	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+		return "", err
+	}
+
+	return data[0], nil
 }
 
 func fetchRankedDetails(encryptedId, region, api_key string) (string, string, string, float64, int, int, int, error) {
