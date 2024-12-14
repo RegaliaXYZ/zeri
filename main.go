@@ -11,10 +11,7 @@ import (
 var (
 	logger   *zap.Logger
 	commands = []types.Command{
-		handlers.PingCommand,
-		handlers.OPGGCommand,
 		handlers.RiotCommand,
-		handlers.PongCommand,
 	}
 )
 
@@ -33,20 +30,6 @@ func main() {
 		return
 	}
 
-	/*
-		patch, err := bot.FetchCurrentPatch()
-		if err != nil {
-			logger.Fatal("Error getting current patch version", zap.Error(err))
-			return
-		}
-		logger.Info("Current patch version", zap.String("patch", patch))
-		champions, err := bot.FetchChampionData(patch)
-		if err != nil {
-			logger.Fatal("Error getting champions on current patch", zap.Error(err))
-			return
-		}
-	*/
-	//logger.Info("All champions", zap.Any("champions", champions))
 	session, err := discordgo.New("Bot " + cfg.Token)
 	if err != nil {
 		logger.Fatal("Error creating Discord session", zap.Error(err))

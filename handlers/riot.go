@@ -20,6 +20,8 @@ var RiotCommand = types.Command{
 	Handler:     riotHandler,
 }
 
+var Routing = ""
+
 func riotHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	// Parse options for Riot ID and tag
 
@@ -28,21 +30,12 @@ func riotHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
-				Content: fmt.Sprintf("Error reading config: %v", err),
+				Content: "Error reading internal config.",
 			},
 		})
 		return
 	}
 	options := i.ApplicationCommandData().Options
-	if len(options) != 2 {
-		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-			Type: discordgo.InteractionResponseChannelMessageWithSource,
-			Data: &discordgo.InteractionResponseData{
-				Content: "Please provide both Riot ID and tag. Usage: `/get-matches riot_id:username tag:tag`",
-			},
-		})
-		return
-	}
 
 	var fullRiotID, riotID, tag, region string
 	for _, opt := range options {
@@ -53,7 +46,24 @@ func riotHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 			region = opt.StringValue()
 		}
 	}
-
+	switch region {
+	case "EUW1", "EUN1", "ME1", "TR1", "RU":
+		Routing = "europe"
+	case "NA1", "LA1", "LA2", "BR1":
+		Routing = "americas"
+	case "KR", "JP1":
+		Routing = "asia"
+	case "OC1", "PH2", "SG2", "TH2", "TW2", "VN2":
+		Routing = "sea"
+	default:
+		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+			Type: discordgo.InteractionResponseChannelMessageWithSource,
+			Data: &discordgo.InteractionResponseData{
+				Content: "Error with the region routing.",
+			},
+		})
+		return
+	}
 	parts := strings.Split(fullRiotID, "#")
 	riotID = parts[0]
 	tag = parts[1]
@@ -63,7 +73,7 @@ func riotHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
-				Content: fmt.Sprintf("Error fetching matches: %v", err),
+				Content: "Error fetching current patch.",
 			},
 		})
 		return
@@ -74,7 +84,7 @@ func riotHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
-				Content: fmt.Sprintf("Error fetching matches: %v", err),
+				Content: "Error fetching puuid from Riot API",
 			},
 		})
 		return
@@ -85,7 +95,7 @@ func riotHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
-				Content: fmt.Sprintf("Error fetching matches: %v", err),
+				Content: "Error fetching account details",
 			},
 		})
 		return
@@ -96,7 +106,7 @@ func riotHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
-				Content: fmt.Sprintf("Error fetching ranked details: %v", err),
+				Content: "Error fetching ranked details.",
 			},
 		})
 		return
@@ -108,23 +118,30 @@ func riotHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
-				Content: fmt.Sprintf("Error fetching matches: %v", err),
+				Content: "Error fetching matches.",
 			},
 		})
 		return
 	}
 
 	matchDetailsGlobals := []string{}
+	total_wins := 0
+	total_losses := 0
 	for _, match := range matches {
-		matchDetails, err := fetchMatchDetails(match, cfg.RiotAPIKey)
+		matchDetails, won, err := fetchMatchDetails(match, puuid, cfg.RiotAPIKey)
 		if err != nil {
 			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 				Type: discordgo.InteractionResponseChannelMessageWithSource,
 				Data: &discordgo.InteractionResponseData{
-					Content: fmt.Sprintf("Error fetching match details: %v", err),
+					Content: "Error fetching match details.",
 				},
 			})
 			return
+		}
+		if won {
+			total_wins++
+		} else {
+			total_losses++
 		}
 		matchDetailsGlobals = append(matchDetailsGlobals, matchDetails)
 
@@ -143,18 +160,13 @@ func riotHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 				Inline: false,
 			},
 			{
-				Name:   "Most Champion 3",
-				Value:  "Zeri 5.0 KDA 80%\nKalista 1.8 KDA 100%\nJinx 10.0KDA 100%",
-				Inline: false,
-			},
-			{
 				Name:   "Match History",
 				Value:  "Recent 10 Games",
 				Inline: false,
 			},
 			{
-				Name:   "10G 10W 0L",
-				Value:  ":regional_indicator_w: " + types.Zeri + " Ranked Solo/Duo 10/0/0 10.0KDA",
+				Name:   fmt.Sprintf("10G %sW %sL", strconv.Itoa(total_wins), strconv.Itoa(total_losses)),
+				Value:  strings.Join(matchDetailsGlobals, "\n"),
 				Inline: false,
 			},
 		},
@@ -165,8 +177,7 @@ func riotHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{
-			Content: "pong",                           // Optional text content
-			Embeds:  []*discordgo.MessageEmbed{embed}, // Attach the embed here
+			Embeds: []*discordgo.MessageEmbed{embed},
 		},
 	})
 }
@@ -186,7 +197,7 @@ func fetchRankedDetails(encryptedId, region, api_key string) (string, string, st
 
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
-		return "", "", "", 0.0, 0, 0, 0, fmt.Errorf("Riot API error: %s", string(body))
+		return "", "", "", 0.0, 0, 0, 0, fmt.Errorf("riot api error: %s", string(body))
 	}
 
 	var accountProfileDetailData []struct {
@@ -210,7 +221,7 @@ func fetchRankedDetails(encryptedId, region, api_key string) (string, string, st
 	return detailData.QueueType, detailData.Tier, detailData.Rank, winrate, detailData.LeaguePoints, detailData.Wins, detailData.Losses, nil
 }
 func getPUUID(riotID, tag, region, api_key string) (string, error) {
-	riotBaseURL := "https://europe.api.riotgames.com" // Replace <region> with the appropriate region
+	riotBaseURL := fmt.Sprintf("https://%s.api.riotgames.com", Routing)
 	url := fmt.Sprintf("%s/riot/account/v1/accounts/by-riot-id/%s/%s", riotBaseURL, riotID, tag)
 
 	req, _ := http.NewRequest("GET", url, nil)
@@ -224,7 +235,7 @@ func getPUUID(riotID, tag, region, api_key string) (string, error) {
 
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
-		return "", fmt.Errorf("Riot API error: %s", string(body))
+		return "", fmt.Errorf("riot api error: %s", string(body))
 	}
 
 	var summonerData struct {
@@ -251,7 +262,7 @@ func fetchAccountProfileDetail(puuid, region, api_key string) (string, string, s
 
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
-		return "", "", "", fmt.Errorf("Riot API error: %s", string(body))
+		return "", "", "", fmt.Errorf("riot api error: %s", string(body))
 	}
 
 	var accountProfileDetailData struct {
@@ -268,9 +279,9 @@ func fetchAccountProfileDetail(puuid, region, api_key string) (string, string, s
 
 func fetchMatches(puuid, api_key string) ([]string, error) {
 	// Convert Riot ID and tag to a PUUID (requires API call)
-	riotBaseURL := "https://europe.api.riotgames.com"
+	riotBaseURL := fmt.Sprintf("https://%s.api.riotgames.com", Routing)
 	// Fetch match history using PUUID
-	matchURL := fmt.Sprintf("%s/lol/match/v5/matches/by-puuid/%s/ids?count=5", riotBaseURL, puuid)
+	matchURL := fmt.Sprintf("%s/lol/match/v5/matches/by-puuid/%s/ids?count=10", riotBaseURL, puuid)
 	req, _ := http.NewRequest("GET", matchURL, nil)
 	req.Header.Set("X-Riot-Token", api_key)
 
@@ -282,7 +293,7 @@ func fetchMatches(puuid, api_key string) ([]string, error) {
 
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
-		return nil, fmt.Errorf("Riot API error: %s", string(body))
+		return nil, fmt.Errorf("riot api error: %s", string(body))
 	}
 
 	var matchIDs []string
@@ -293,20 +304,20 @@ func fetchMatches(puuid, api_key string) ([]string, error) {
 	return matchIDs, nil
 }
 
-func fetchMatchDetails(matchID, api_key string) (string, error) {
+func fetchMatchDetails(matchID, puuid, api_key string) (string, bool, error) {
 	url := fmt.Sprintf("https://europe.api.riotgames.com/lol/match/v5/matches/%s", matchID) // Replace <region>
 	req, _ := http.NewRequest("GET", url, nil)
 	req.Header.Set("X-Riot-Token", api_key)
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return "", err
+		return "", false, err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
-		return "", fmt.Errorf("Riot API error: %s", string(body))
+		return "", false, fmt.Errorf("riot api error: %s", string(body))
 	}
 
 	var matchData struct {
@@ -314,30 +325,41 @@ func fetchMatchDetails(matchID, api_key string) (string, error) {
 			Participants []struct {
 				RiotID       string `json:"riotIdGameName"`
 				RiotTag      string `json:"riotIdTagline"`
+				Puuid        string `json:"puuid"`
 				ChampionName string `json:"championName"`
 				Kills        int    `json:"kills"`
 				Deaths       int    `json:"deaths"`
 				Assists      int    `json:"assists"`
 				TeamID       int    `json:"teamId"`
+				Win          bool   `json:"win"`
 			} `json:"participants"`
+			QueueId int `json:"queueId"`
 		} `json:"info"`
 	}
 
 	if err := json.NewDecoder(resp.Body).Decode(&matchData); err != nil {
-		return "", err
+		return "", false, err
 	}
-	fmt.Println(matchData)
+	//fmt.Println(matchData)
 
-	team1 := "Team 1:\n"
-	team2 := "Team 2:\n"
+	matchLine := ""
+	won := false
 	for _, p := range matchData.Info.Participants {
-		line := fmt.Sprintf("%s#%s - %s: %d/%d/%d\n", p.RiotID, p.RiotTag, p.ChampionName, p.Kills, p.Deaths, p.Assists)
-		if p.TeamID == 100 {
-			team1 += line
-		} else {
-			team2 += line
+		if p.Puuid == puuid {
+			if p.Win {
+				matchLine += ":regional_indicator_w: "
+				won = true
+			} else {
+				matchLine += types.Loss + " "
+			}
+			kda := "Perfect"
+			if p.Deaths != 0 {
+				calculated_kda := float64(p.Kills+p.Assists) / float64(p.Deaths)
+				kda = fmt.Sprintf("%.1f", calculated_kda)
+			}
+			matchLine += fmt.Sprintf("%s %s %d/%d/%d %s KDA", types.GameModes[matchData.Info.QueueId], types.Champions[p.ChampionName], p.Kills, p.Deaths, p.Assists, kda)
 		}
 	}
 
-	return team1 + "\n" + team2, nil
+	return matchLine, won, nil
 }

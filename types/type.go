@@ -9,173 +9,209 @@ type Command struct {
 }
 
 var (
-	Aatrox       = "<:aatrox:1317322822858702848>"
-	Ahri         = "<:ahri:1317322995806507050>"
-	Akali        = "<:akali:1317323005516578919>"
-	Akshan       = "<:akshan:1317323015461277717>"
-	Alistar      = "<:alistar:1317323026534105088>"
-	Ambessa      = "<:ambessa:1317323038852648970>"
-	Amumu        = "<:amumu:1317323047060897792>"
-	Anivia       = "<:anivia:1317323070129832048>"
-	Annie        = "<:annie:1317323079617220701>"
-	Aphelios     = "<:aphelios:1317323087837925416>"
-	Ashe         = "<:ashe:1317323093999484970>"
-	AurelionSol  = "<:aurelionsol:1317323101880455228>"
-	Aurora       = "<:aurora:1317323110336172062>"
-	Azir         = "<:azir:1317323130477346849>"
-	Bard         = "<:bard:1317323167991074909>"
-	Belveth      = "<:belveth:1317323558229377094>"
-	Blitzcrank   = "<:blitzcrank:1317323565275680839>"
-	Brand        = "<:brand:1317323572892663928>"
-	Braum        = "<:braum:1317323586817626142>"
-	Briar        = "<:briar:1317323596376572004>"
-	Caitlyn      = "<:caitlyn:1317323606035922974>"
-	Camille      = "<:camille:1317323617712869426>"
-	Cassiopeia   = "<:cassiopeia:1317323625183055984>"
-	Chogath      = "<:chogath:1317323636335710228>"
-	Corki        = "<:corki:1317323645051338752>"
-	Darius       = "<:darius:1317323653121052713>"
-	Diana        = "<:diana:1317323661853855764>"
-	DrMundo      = "<:drmundo:1317323679939690598>"
-	Draven       = "<:draven:1317323672070918164>"
-	Ekko         = "<:ekko:1317323688768700487>"
-	Elise        = "<:elise:1317323703050305547>"
-	Evelynn      = "<:evelynn:1317323710784471071>"
-	Ezreal       = "<:ezreal:1317323719936442421>"
-	Fiddlesticks = "<:fiddlesticks:1317323732154454118>"
-	Fiora        = "<:fiora:1317323740392063006>"
-	Fizz         = "<:fizz:1317323748122296421>"
-	Galio        = "<:galio:1317323756816826398>"
-	Gangplank    = "<:gangplank:1317323769844596877>"
-	Garen        = "<:garen:1317323779852210298>"
-	Gnar         = "<:gnar:1317323788165189692>"
-	Gragas       = "<:gragas:1317323796570443847>"
-	Graves       = "<:graves:1317323809405272084>"
-	Gwen         = "<:gwen:1317323818582413472>"
-	Hecarim      = "<:hecarim:1317323827855757432>"
-	Heimerdinger = "<:heimerdinger:1317323836022198282>"
-	Hwei         = "<:hwei:1317323856414900275>"
-	Illaoi       = "<:illaoi:1317323868465004585>"
-	Irelia       = "<:irelia:1317323889134538792>"
-	Ivern        = "<:ivern:1317323899867762810>"
-	Janna        = "<:janna:1317323913063174154>"
-	JarvanIV     = "<:jarvaniv:1317323924866076784>"
-	Jax          = "<:jax:1317323936429768856>"
-	Jayce        = "<:jayce:1317323950497337344>"
-	Jhin         = "<:jhin:1317323961738072104>"
-	Jinx         = "<:jinx:1317324012292149300>"
-	KSante       = "<:ksante:1317324132945367072>"
-	Kaisa        = "<:kaisa:1317324019632181358>"
-	Kalista      = "<:kalista:1317324027240386630>"
-	Karma        = "<:karma:1317324036673372190>"
-	Karthus      = "<:karthus:1317324046383448137>"
-	Kassadin     = "<:kassadin:1317324055375904798>"
-	Katarina     = "<:katarina:1317324062577397810>"
-	Kayle        = "<:kayle:1317324070919995452>"
-	Kayn         = "<:kayn:1317324080625614848>"
-	Kennen       = "<:kennen:1317324090708721735>"
-	Khazix       = "<:khazix:1317324098241695784>"
-	Kindred      = "<:kindred:1317324107154460712>"
-	Kled         = "<:kled:1317324115505319957>"
-	KogMaw       = "<:kogmaw:1317324124925726750>"
-	Leblanc      = "<:leblanc:1317324140482658304>"
-	LeeSin       = "<:leesin:1317324149424652360>"
-	Leona        = "<:leona:1317324159398969414>"
-	Lillia       = "<:lillia:1317324168383172649>"
-	Lissandra    = "<:lissandra:1317324177912365177>"
-	Lucian       = "<:lucian:1317324184791154768>"
-	Lulu         = "<:lulu:1317324192731103242>"
-	Lux          = "<:lux:1317324200398032926>"
-	Malphite     = "<:malphite:1317324209327964180>"
-	Malzahar     = "<:malzahar:1317324217796137012>"
-	Maokai       = "<:maokai:1317324225132101632>"
-	MasterYi     = "<:masteryi:1317324233889550336>"
-	Milio        = "<:milio:1317324244245418044>"
-	MissFortune  = "<:missfortune:1317324252042629201>"
-	MonkeyKing   = "<:monkeyking:1317324260343287828>"
-	Mordekaiser  = "<:mordekaiser:1317324271621640253>"
-	Morgana      = "<:morgana:1317324282828951582>"
-	Naafiri      = "<:naafiri:1317324290001076254>"
-	Nami         = "<:nami:1317324297265483776>"
-	Nasus        = "<:nasus:1317324304668688395>"
-	Nautilus     = "<:nautilus:1317324311693885441>"
-	Neeko        = "<:neeko:1317324320573493370>"
-	Nidalee      = "<:nidalee:1317324330170060840>"
-	Nilah        = "<:nilah:1317324339304992809>"
-	Nocturne     = "<:nocturne:1317324349686157413>"
-	Nunu         = "<:nunu:1317324359668334612>"
-	Olaf         = "<:olaf:1317324367964672030>"
-	Orianna      = "<:orianna:1317324376433233961>"
-	Ornn         = "<:ornn:1317324386558283776>"
-	Pantheon     = "<:pantheon:1317324395873701959>"
-	Poppy        = "<:poppy:1317324473996804136>"
-	Pyke         = "<:pyke:1317324482385281126>"
-	Qiyana       = "<:qiyana:1317324489012547655>"
-	Quinn        = "<:quinn:1317324497036116059>"
-	Rakan        = "<:rakan:1317324509950378004>"
-	Rammus       = "<:rammus:1317324519555469352>"
-	RekSai       = "<:reksai:1317324529743302739>"
-	Rell         = "<:rell:1317324538899464265>"
-	Renata       = "<:renata:1317324630880550922>"
-	Renekton     = "<:renekton:1317324652221169725>"
-	Rengar       = "<:rengar:1317324660375031850>"
-	Riven        = "<:riven:1317324669107306597>"
-	Rumble       = "<:rumble:1317324678200819813>"
-	Ryze         = "<:ryze:1317324684647207003>"
-	Samira       = "<:samira:1317324694592159864>"
-	Sejuani      = "<:sejuani:1317324702573924422>"
-	Senna        = "<:senna:1317324709746053193>"
-	Seraphine    = "<:seraphine:1317324717455315034>"
-	Sett         = "<:sett:1317324725566967858>"
-	Shaco        = "<:shaco:1317324733628289105>"
-	Shen         = "<:shen:1317324741626826772>"
-	Shyvana      = "<:shyvana:1317324750837776414>"
-	Singed       = "<:singed:1317324768491470878>"
-	Sion         = "<:sion:1317324782450118676>"
-	Sivir        = "<:sivir:1317324790394130473>"
-	Skarner      = "<:skarner:1317324798593990736>"
-	Smolder      = "<:smolder:1317324808907657246>"
-	Sona         = "<:sona:1317324816738418698>"
-	Soraka       = "<:soraka:1317324826108497992>"
-	Swain        = "<:swain:1317324836187668480>"
-	Sylas        = "<:sylas:1317324844681138237>"
-	Syndra       = "<:syndra:1317324853774385276>"
-	TahmKench    = "<:tahmkench:1317324861890101352>"
-	Taliyah      = "<:taliyah:1317324872753483847>"
-	Talon        = "<:talon:1317324879124496517>"
-	Taric        = "<:taric:1317324898179219547>"
-	Teemo        = "<:teemo:1317324905942880256>"
-	Thresh       = "<:thresh:1317324914398593084>"
-	Tristana     = "<:tristana:1317324924045627414>"
-	Trundle      = "<:trundle:1317324932681695343>"
-	Tryndamere   = "<:tryndamere:1317324941384880138>"
-	TwistedFate  = "<:twistedfate:1317324957499523082>"
-	Twitch       = "<:twitch:1317324971068096582>"
-	Udyr         = "<:udyr:1317324978840014918>"
-	Urgot        = "<:urgot:1317324988872917003>"
-	Varus        = "<:varus:1317324997005545472>"
-	Vayne        = "<:vayne:1317325008783020102>"
-	Veigar       = "<:veigar:1317325017293389894>"
-	Velkoz       = "<:velkoz:1317325026059358218>"
-	Vex          = "<:vex:1317325034842357820>"
-	Vi           = "<:vi:1317325045629976607>"
-	Viego        = "<:viego:1317325054299865170>"
-	Viktor       = "<:viktor:1317325062734348328>"
-	Vladimir     = "<:vladimir:1317325071542652948>"
-	Volibear     = "<:volibear:1317325079465562152>"
-	Warwick      = "<:warwick:1317325087732404224>"
-	Xayah        = "<:xayah:1317325095215300648>"
-	Xerath       = "<:xerath:1317325110344024165>"
-	XinZhao      = "<:xinzhao:1317325120414548068>"
-	Yasuo        = "<:yasuo:1317325129247887442>"
-	Yone         = "<:yone:1317325137204350986>"
-	Yorick       = "<:yorick:1317325147354693632>"
-	Yuumi        = "<:yuumi:1317325157609508905>"
-	Zac          = "<:zac:1317325171727532152>"
-	Zed          = "<:zed:1317325182414749776>"
-	Zeri         = "<:zeri:1317325190278942740>"
-	Ziggs        = "<:ziggs:1317325200995647549>"
-	Zilean       = "<:zilean:1317325209526734919>"
-	Zoe          = "<:zoe:1317325218011938857>"
-	Zyra         = "<:zyra:1317325225754628189>"
+	Loss = "<:loss:1317596200702312488>"
 )
+
+var GameModes = map[int]string{
+	0:    "Custom Game",
+	72:   "1v1 Snowdown Showdown",
+	73:   "2v2 Snowdown Showdown",
+	75:   "6v6 Hexakill (Summoner's Rift)",
+	76:   "Ultra Rapid Fire",
+	100:  "ARAM (Butcher's Bridge)",
+	325:  "All Random (Summoner's Rift)",
+	400:  "Draft Pick",
+	420:  "Ranked Solo/Duo",
+	430:  "Blind Pick",
+	440:  "Ranked Flex",
+	450:  "ARAM (Howling Abyss)",
+	490:  "Normal (Quickplay)",
+	700:  "Clash (Summoner's Rift)",
+	720:  "Clash (Howling Abyss)",
+	820:  "Co-op vs. AI Beginner Bot (Twisted Treeline)",
+	870:  "Co-op vs. AI Intro Bot (Summoner's Rift)",
+	880:  "Co-op vs. AI Beginner Bot (Summoner's Rift)",
+	890:  "Co-op vs. AI Intermediate Bot (Summoner's Rift)",
+	900:  "ARURF (Summoner's Rift)",
+	910:  "Ascension",
+	1300: "Nexus Blitz",
+	1400: "Ultimate Spellbook",
+	1700: "Arena",
+	1710: "Arena (16 players)",
+	1810: "Swarm",
+	1820: "Swarm",
+	1830: "Swarm",
+	1840: "Swarm",
+	1900: "URF",
+}
+var Champions = map[string]string{
+	"Aatrox":       "<:aatrox:1317322822858702848>",
+	"Ahri":         "<:ahri:1317322995806507050>",
+	"Akali":        "<:akali:1317323005516578919>",
+	"Akshan":       "<:akshan:1317323015461277717>",
+	"Alistar":      "<:alistar:1317323026534105088>",
+	"Ambessa":      "<:ambessa:1317323038852648970>",
+	"Amumu":        "<:amumu:1317323047060897792>",
+	"Anivia":       "<:anivia:1317323070129832048>",
+	"Annie":        "<:annie:1317323079617220701>",
+	"Aphelios":     "<:aphelios:1317323087837925416>",
+	"Ashe":         "<:ashe:1317323093999484970>",
+	"AurelionSol":  "<:aurelionsol:1317323101880455228>",
+	"Aurora":       "<:aurora:1317323110336172062>",
+	"Azir":         "<:azir:1317323130477346849>",
+	"Bard":         "<:bard:1317323167991074909>",
+	"Belveth":      "<:belveth:1317323558229377094>",
+	"Blitzcrank":   "<:blitzcrank:1317323565275680839>",
+	"Brand":        "<:brand:1317323572892663928>",
+	"Braum":        "<:braum:1317323586817626142>",
+	"Briar":        "<:briar:1317323596376572004>",
+	"Caitlyn":      "<:caitlyn:1317323606035922974>",
+	"Camille":      "<:camille:1317323617712869426>",
+	"Cassiopeia":   "<:cassiopeia:1317323625183055984>",
+	"Chogath":      "<:chogath:1317323636335710228>",
+	"Corki":        "<:corki:1317323645051338752>",
+	"Darius":       "<:darius:1317323653121052713>",
+	"Diana":        "<:diana:1317323661853855764>",
+	"DrMundo":      "<:drmundo:1317323679939690598>",
+	"Draven":       "<:draven:1317323672070918164>",
+	"Ekko":         "<:ekko:1317323688768700487>",
+	"Elise":        "<:elise:1317323703050305547>",
+	"Evelynn":      "<:evelynn:1317323710784471071>",
+	"Ezreal":       "<:ezreal:1317323719936442421>",
+	"Fiddlesticks": "<:fiddlesticks:1317323732154454118>",
+	"Fiora":        "<:fiora:1317323740392063006>",
+	"Fizz":         "<:fizz:1317323748122296421>",
+	"Galio":        "<:galio:1317323756816826398>",
+	"Gangplank":    "<:gangplank:1317323769844596877>",
+	"Garen":        "<:garen:1317323779852210298>",
+	"Gnar":         "<:gnar:1317323788165189692>",
+	"Gragas":       "<:gragas:1317323796570443847>",
+	"Graves":       "<:graves:1317323809405272084>",
+	"Gwen":         "<:gwen:1317323818582413472>",
+	"Hecarim":      "<:hecarim:1317323827855757432>",
+	"Heimerdinger": "<:heimerdinger:1317323836022198282>",
+	"Hwei":         "<:hwei:1317323856414900275>",
+	"Illaoi":       "<:illaoi:1317323868465004585>",
+	"Irelia":       "<:irelia:1317323889134538792>",
+	"Ivern":        "<:ivern:1317323899867762810>",
+	"Janna":        "<:janna:1317323913063174154>",
+	"JarvanIV":     "<:jarvaniv:1317323924866076784>",
+	"Jax":          "<:jax:1317323936429768856>",
+	"Jayce":        "<:jayce:1317323950497337344>",
+	"Jhin":         "<:jhin:1317323961738072104>",
+	"Jinx":         "<:jinx:1317324012292149300>",
+	"KSante":       "<:ksante:1317324132945367072>",
+	"Kaisa":        "<:kaisa:1317324019632181358>",
+	"Kalista":      "<:kalista:1317324027240386630>",
+	"Karma":        "<:karma:1317324036673372190>",
+	"Karthus":      "<:karthus:1317324046383448137>",
+	"Kassadin":     "<:kassadin:1317324055375904798>",
+	"Katarina":     "<:katarina:1317324062577397810>",
+	"Kayle":        "<:kayle:1317324070919995452>",
+	"Kayn":         "<:kayn:1317324080625614848>",
+	"Kennen":       "<:kennen:1317324090708721735>",
+	"Khazix":       "<:khazix:1317324098241695784>",
+	"Kindred":      "<:kindred:1317324107154460712>",
+	"Kled":         "<:kled:1317324115505319957>",
+	"KogMaw":       "<:kogmaw:1317324124925726750>",
+	"Leblanc":      "<:leblanc:1317324140482658304>",
+	"LeeSin":       "<:leesin:1317324149424652360>",
+	"Leona":        "<:leona:1317324159398969414>",
+	"Lillia":       "<:lillia:1317324168383172649>",
+	"Lissandra":    "<:lissandra:1317324177912365177>",
+	"Lucian":       "<:lucian:1317324184791154768>",
+	"Lulu":         "<:lulu:1317324192731103242>",
+	"Lux":          "<:lux:1317324200398032926>",
+	"Malphite":     "<:malphite:1317324209327964180>",
+	"Malzahar":     "<:malzahar:1317324217796137012>",
+	"Maokai":       "<:maokai:1317324225132101632>",
+	"MasterYi":     "<:masteryi:1317324233889550336>",
+	"Milio":        "<:milio:1317324244245418044>",
+	"MissFortune":  "<:missfortune:1317324252042629201>",
+	"MonkeyKing":   "<:monkeyking:1317324260343287828>",
+	"Mordekaiser":  "<:mordekaiser:1317324271621640253>",
+	"Morgana":      "<:morgana:1317324282828951582>",
+	"Naafiri":      "<:naafiri:1317324290001076254>",
+	"Nami":         "<:nami:1317324297265483776>",
+	"Nasus":        "<:nasus:1317324304668688395>",
+	"Nautilus":     "<:nautilus:1317324311693885441>",
+	"Neeko":        "<:neeko:1317324320573493370>",
+	"Nidalee":      "<:nidalee:1317324330170060840>",
+	"Nilah":        "<:nilah:1317324339304992809>",
+	"Nocturne":     "<:nocturne:1317324349686157413>",
+	"Nunu":         "<:nunu:1317324359668334612>",
+	"Olaf":         "<:olaf:1317324367964672030>",
+	"Orianna":      "<:orianna:1317324376433233961>",
+	"Ornn":         "<:ornn:1317324386558283776>",
+	"Pantheon":     "<:pantheon:1317324395873701959>",
+	"Poppy":        "<:poppy:1317324473996804136>",
+	"Pyke":         "<:pyke:1317324482385281126>",
+	"Qiyana":       "<:qiyana:1317324489012547655>",
+	"Quinn":        "<:quinn:1317324497036116059>",
+	"Rakan":        "<:rakan:1317324509950378004>",
+	"Rammus":       "<:rammus:1317324519555469352>",
+	"RekSai":       "<:reksai:1317324529743302739>",
+	"Rell":         "<:rell:1317324538899464265>",
+	"Renata":       "<:renata:1317324630880550922>",
+	"Renekton":     "<:renekton:1317324652221169725>",
+	"Rengar":       "<:rengar:1317324660375031850>",
+	"Riven":        "<:riven:1317324669107306597>",
+	"Rumble":       "<:rumble:1317324678200819813>",
+	"Ryze":         "<:ryze:1317324684647207003>",
+	"Samira":       "<:samira:1317324694592159864>",
+	"Sejuani":      "<:sejuani:1317324702573924422>",
+	"Senna":        "<:senna:1317324709746053193>",
+	"Seraphine":    "<:seraphine:1317324717455315034>",
+	"Sett":         "<:sett:1317324725566967858>",
+	"Shaco":        "<:shaco:1317324733628289105>",
+	"Shen":         "<:shen:1317324741626826772>",
+	"Shyvana":      "<:shyvana:1317324750837776414>",
+	"Singed":       "<:singed:1317324768491470878>",
+	"Sion":         "<:sion:1317324782450118676>",
+	"Sivir":        "<:sivir:1317324790394130473>",
+	"Skarner":      "<:skarner:1317324798593990736>",
+	"Smolder":      "<:smolder:1317324808907657246>",
+	"Sona":         "<:sona:1317324816738418698>",
+	"Soraka":       "<:soraka:1317324826108497992>",
+	"Swain":        "<:swain:1317324836187668480>",
+	"Sylas":        "<:sylas:1317324844681138237>",
+	"Syndra":       "<:syndra:1317324853774385276>",
+	"TahmKench":    "<:tahmkench:1317324861890101352>",
+	"Taliyah":      "<:taliyah:1317324872753483847>",
+	"Talon":        "<:talon:1317324879124496517>",
+	"Taric":        "<:taric:1317324898179219547>",
+	"Teemo":        "<:teemo:1317324905942880256>",
+	"Thresh":       "<:thresh:1317324914398593084>",
+	"Tristana":     "<:tristana:1317324924045627414>",
+	"Trundle":      "<:trundle:1317324932681695343>",
+	"Tryndamere":   "<:tryndamere:1317324941384880138>",
+	"TwistedFate":  "<:twistedfate:1317324957499523082>",
+	"Twitch":       "<:twitch:1317324971068096582>",
+	"Udyr":         "<:udyr:1317324978840014918>",
+	"Urgot":        "<:urgot:1317324988872917003>",
+	"Varus":        "<:varus:1317324997005545472>",
+	"Vayne":        "<:vayne:1317325008783020102>",
+	"Veigar":       "<:veigar:1317325017293389894>",
+	"Velkoz":       "<:velkoz:1317325026059358218>",
+	"Vex":          "<:vex:1317325034842357820>",
+	"Vi":           "<:vi:1317325045629976607>",
+	"Viego":        "<:viego:1317325054299865170>",
+	"Viktor":       "<:viktor:1317325062734348328>",
+	"Vladimir":     "<:vladimir:1317325071542652948>",
+	"Volibear":     "<:volibear:1317325079465562152>",
+	"Warwick":      "<:warwick:1317325087732404224>",
+	"Xayah":        "<:xayah:1317325095215300648>",
+	"Xerath":       "<:xerath:1317325110344024165>",
+	"XinZhao":      "<:xinzhao:1317325120414548068>",
+	"Yasuo":        "<:yasuo:1317325129247887442>",
+	"Yone":         "<:yone:1317325137204350986>",
+	"Yorick":       "<:yorick:1317325147354693632>",
+	"Yuumi":        "<:yuumi:1317325157609508905>",
+	"Zac":          "<:zac:1317325171727532152>",
+	"Zed":          "<:zed:1317325182414749776>",
+	"Zeri":         "<:zeri:1317325190278942740>",
+	"Ziggs":        "<:ziggs:1317325200995647549>",
+	"Zilean":       "<:zilean:1317325209526734919>",
+	"Zoe":          "<:zoe:1317325218011938857>",
+	"Zyra":         "<:zyra:1317325225754628189>",
+}
