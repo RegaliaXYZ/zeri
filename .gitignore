@@ -1,0 +1,4 @@
+*.exe
+/utils/icons/
+/utils/*.txt
+*.json
