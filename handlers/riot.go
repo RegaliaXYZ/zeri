@@ -14,8 +14,8 @@ import (
 )
 
 var RiotCommand = types.Command{
-	Name:        "get-matches",
-	Description: "Fetches the last 5 matches for a Riot ID and tag",
+	Name:        "rank",
+	Description: "Fetches the last 5 matches for a Riot ID#Tag and Region",
 	Handler:     riotHandler,
 }
 
